@@ -1,6 +1,6 @@
 [package]
 name = "kilter"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "A high-performance rate limiting reverse proxy built on Pingora"
 license = "MIT"
