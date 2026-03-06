@@ -1,0 +1,7 @@
+FROM rust:1.93-alpine
+
+RUN apk add make cmake g++
+
+RUN cargo install --locked watchexec-cli@2.4.3
+
+WORKDIR /app

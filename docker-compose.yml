@@ -1,0 +1,96 @@
+services:
+  kilter:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.dev
+    container_name: kilter
+    stop_grace_period: 1s
+    working_dir: /app
+    volumes:
+      - ./:/app
+      - ./target/docker/kilter/:/app/target
+    command: sh -c "watchexec -e rs,toml,ron -r 'cargo run'"
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    environment:
+      - "RUST_BACKTRACE=full"
+      - "RUST_LOG=debug,watchexec=info,watchexec_cli=info,pingora_core=info,opentelemetry_sdk=info,h2=info,hyper_util=info,rustls_platform_verifier=info"
+    depends_on:
+      - redis
+      - alloy
+      - test-backend
+  test-backend:
+    build:
+      context: ./examples/test-backend
+      dockerfile: Dockerfile.dev
+    container_name: kilter-test-backend
+    stop_grace_period: 1s
+    working_dir: /app
+    volumes:
+      - ./examples/test-backend:/app
+      - ./examples/test-backend/target/docker:/app/target
+    command: sh -c "watchexec -e rs,toml -r 'cargo run'"
+    ports:
+      - "8000:8000"
+    environment:
+      - "RUST_LOG=info"
+      - "RUST_BACKTRACE=full"
+    depends_on:
+      - alloy
+  redis:
+    image: redis:8-alpine
+    container_name: kilter-redis
+    stop_grace_period: 1s
+    command: --loglevel warning
+    ports:
+      - "6379:6379"
+  grafana:
+    container_name: kilter-grafana
+    image: grafana/grafana
+    restart: unless-stopped
+    stop_grace_period: 1s
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./docker/dev/grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
+      - ./docker/dev/grafana/dashboards.yml:/etc/grafana/provisioning/dashboards/dashboards.yml
+      - ./docker/dev/grafana/dashboard.json:/etc/grafana/provisioning/dashboards/kilter.json
+    environment:
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_BASIC_ENABLED=false
+      - GF_LOG_LEVEL=warn
+  alloy:
+    container_name: kilter-alloy
+    image: grafana/alloy
+    stop_grace_period: 1s
+    ports:
+      - 12345:12345
+    volumes:
+      - ./docker/dev/config.alloy:/etc/alloy/config.alloy
+    command: run --server.http.listen-addr=0.0.0.0:12345 --storage.path=/var/lib/alloy/data /etc/alloy/config.alloy
+    depends_on:
+      - tempo
+  tempo:
+    container_name: kilter-tempo
+    image: grafana/tempo
+    stop_grace_period: 1s
+    command: "-config.file=/etc/grafana/tempo.yml -log.level=warn"
+    volumes:
+      - ./docker/dev/grafana/tempo.yml:/etc/grafana/tempo.yml
+    ports:
+      - "3200:3200"
+  prometheus:
+    container_name: kilter-prometheus
+    image: prom/prometheus:latest
+    stop_grace_period: 1s
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--enable-feature=native-histograms"
+      - "--web.enable-remote-write-receiver"
+      - "--log.level=warn"
+    volumes:
+      - ./docker/dev/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"

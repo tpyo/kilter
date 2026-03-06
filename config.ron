@@ -1,0 +1,125 @@
+(
+    proxy: (
+        tls: false,
+        upstreams: ["test-backend:8000"],
+        listen: "[::]:8080",
+        grace_period_seconds: 10,
+        graceful_shutdown_timeout_seconds: 5,
+        upstream_keepalive_pool_size: 256,
+        log_format: default,
+        trusted_proxies: ["docker", "proxies", "internal"],
+        health_check: Some((
+            addr: "test-backend",
+            method: "GET",
+            path: "/healthz",
+            port: None,
+            host: None,
+            tls: false,
+            headers: {},
+            failure_threshold: 3,
+            success_threshold: 1,
+            connection_timeout_seconds: 1,
+            read_timeout_seconds: 1,
+            reuse_connection: false,
+            frequency_seconds: 5,
+        )),
+    ),
+    // Management service
+    management: (
+        enabled: true,
+        listen: "[::]:8081",
+    ),
+    redis: (
+        url: "redis://redis:6379/0",
+        // Should requests be allowed if redis is unavailable?
+        fail_open: true,
+        // Timeout for redis operations
+        timeout_seconds: 0.5,
+        // Reconnect interval for redis when it is unavailable
+        reconnect_interval_seconds: 1,
+        // How often to refresh the in-memory blocklist from Redis
+        block_list_refresh_seconds: 2,
+    ),
+    telemetry: (
+        otlp_endpoint: Some("http://alloy:4317"),
+        otlp_protocol: Grpc,
+    ),
+    ip_sets: Some({
+        // Predefined IP sets (loaded from external sources)
+        "proxies": External([
+            CloudFront,
+        ]),
+        "crawlers": External([
+            Google,
+            Bing,
+        ]),
+        // Inline CIDR definitions
+        "internal": Inline([
+            "10.0.0.0/8",
+            // "192.168.0.0/16",
+        ]),
+        "docker": Inline([
+            "172.17.0.0/16",
+            "172.18.0.0/16",
+            "172.19.0.0/16",
+            "172.20.0.0/14",
+            "172.24.0.0/14",
+            "172.28.0.0/14",
+        ]),
+        "partners": Inline([
+            "203.0.113.0/24",
+            "198.51.100.0/24",
+        ]),
+    }),
+    limits: {
+        "bad-bots": (
+            interval: 600,
+            max: 0,
+            algorithm: SlidingWindow,
+            keys: (
+                headers: (
+                    names: ["X-Forwarded-For"],
+                ),
+            ),
+            matches: ( 
+                paths: Some((
+                    match_any: ["/.*"],
+                )),
+                headers: Some((
+                    match_any: [
+                        (name: "User-Agent", pattern: ".*SiteAuditBot.*"),
+                        (name: "User-Agent", pattern: "SEMrushBot"),
+                        (name: "User-Agent", pattern: ".*SemrushBot.*"),
+                        (name: "User-Agent", pattern: "pimeyes.com crawler"),
+                        (name: "User-Agent", pattern: ".*SEOChecker.*"),
+                        (name: "User-Agent", pattern: "DataForSeoBot/.*"),
+                        (name: "User-Agent", pattern: ".*AhrefsBot.*"),
+                    ],
+                )),
+            ),
+            excludes: None,
+        ),
+        "global": (
+            interval: 10,
+            max: 5,
+            algorithm: Gcra,
+            keys: (
+                headers: (
+                    names: ["Host", "X-Forwarded-For"],
+                ),
+            ),
+            matches: (
+                paths: Some((
+                    match_any: ["/.*"],
+                )),
+                headers: None,
+            ),
+            excludes: Some((
+                ip_sets: Some([
+                    "internal",
+                    "crawlers",
+                ]),
+            )),
+        ),
+    },
+)

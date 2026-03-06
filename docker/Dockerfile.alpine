@@ -1,0 +1,19 @@
+FROM rust:1.93-alpine3.21 AS build
+
+RUN apk add --no-cache make cmake g++ musl-dev ca-certificates
+
+WORKDIR /build
+
+COPY Cargo.toml Cargo.lock ./
+COPY src ./src
+
+RUN cargo build --release
+
+FROM scratch AS final
+
+COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=build /build/target/release/kilter /usr/local/bin/kilter
+
+EXPOSE 8080 8081
+
+ENTRYPOINT ["kilter"]
