@@ -8,7 +8,7 @@ A high-performance rate-limiting reverse proxy built on Cloudflare's [Pingora](h
 
 Search engine crawlers are good for your site, but aggressive scrapers are not. Kilter lets you distinguish between them:
 
-- **Built-in IP sets** for Google, Bing, OpenAI (SearchBot, GPTBot, ChatGPT-User), Cloudflare, CloudFront, and Fastly - fetched at startup so you always have current ranges
+- **Built-in IP sets** for Google, Bing, OpenAI (SearchBot, GPTBot, ChatGPT-User) - fetched at startup
 - **Exclude known crawlers** from rate limits using IP sets or User-Agent patterns
 - **Throttle unrecognized bots** with tight limits while leaving verified crawlers unrestricted
 
@@ -37,6 +37,14 @@ Check health: `curl http://localhost:8081/healthz`
 View metrics: `curl http://localhost:8081/metrics`
 
 ## Docker
+
+Images are published to [ghcr.io/tpyo/kilter](https://github.com/tpyo/kilter/pkgs/container/kilter).
+
+```bash
+docker pull ghcr.io/tpyo/kilter:latest
+```
+
+### Dev environment
 
 ```bash
 docker compose up
