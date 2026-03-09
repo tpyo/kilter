@@ -17,7 +17,7 @@ pingora-load-balancing = "0.8.0"
 redis = { version = "1.0.4", features = ["tokio-comp", "connection-manager"] }
 ron = "0.12.0"
 serde = { version = "1.0", features = ["derive"] }
-tokio = { version = "1.49.0", features = [
+tokio = { version = "1.50.0", features = [
     "rt-multi-thread",
     "net",
     "sync",
