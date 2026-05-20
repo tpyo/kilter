@@ -34,14 +34,14 @@ tracing-subscriber = { version = "0.3", features = [
     "json",
 ] }
 tracing-logfmt = "0.3"
-opentelemetry = "0.31"
-opentelemetry_sdk = { version = "0.31", features = ["rt-tokio"] }
-opentelemetry-otlp = { version = "0.31", default-features = false, features = [
+opentelemetry = "0.32"
+opentelemetry_sdk = { version = "0.32", features = ["rt-tokio"] }
+opentelemetry-otlp = { version = "0.32", default-features = false, features = [
     "grpc-tonic",
     "http-proto",
     "trace",
 ] }
-tracing-opentelemetry = "0.32"
+tracing-opentelemetry = "0.33.0"
 async-trait = "0.1.89"
 url = "2.5.8"
 mimalloc = "0.1.50"
