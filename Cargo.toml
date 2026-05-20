@@ -41,7 +41,7 @@ opentelemetry-otlp = { version = "0.32", default-features = false, features = [
     "http-proto",
     "trace",
 ] }
-tracing-opentelemetry = "0.32"
+tracing-opentelemetry = "0.33.0"
 async-trait = "0.1.89"
 url = "2.5.8"
 mimalloc = "0.1.50"
