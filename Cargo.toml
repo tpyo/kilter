@@ -44,7 +44,7 @@ opentelemetry-otlp = { version = "0.32", default-features = false, features = [
 tracing-opentelemetry = "0.33.0"
 async-trait = "0.1.89"
 url = "2.5.8"
-mimalloc = "0.1.50"
+mimalloc = "0.1.51"
 num_cpus = "1.17.0"
 prometheus = "0.14.0"
 hyper = { version = "1.9.0", features = ["server", "http1"] }
