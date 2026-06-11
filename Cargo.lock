@@ -1933,18 +1933,18 @@ dependencies = [
 
 [[package]]
 name = "pingora-ketama"
-version = "0.8.0"
+version = "0.8.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0286fb5a0359dca1e2e137dfe14ca4d94f676635a5eae4616bb3d8d4ce06d120"
+checksum = "3e2a2e43a14f1d291fba7905542c7c1d1f89528f470b3cd48b6806e702ea772f"
 dependencies = [
  "crc32fast",
 ]
 
 [[package]]
 name = "pingora-load-balancing"
-version = "0.8.0"
+version = "0.8.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d2606e9e22e72927a69772cefe56b0d41d251c3ffdfcd548a6020fe157fb79ad"
+checksum = "361b69af0234d2e4d10234e2efd106bb3b8147c575d52f45604a46aaf26def7a"
 dependencies = [
  "arc-swap",
  "async-trait",
