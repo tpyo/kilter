@@ -25,3 +25,8 @@ updates:
         patterns:
           - "opentelemetry*"
           - "tracing-opentelemetry"
+      pingora:
+        patterns:
+          - "pingora"
+          - "pingora-*"
+
