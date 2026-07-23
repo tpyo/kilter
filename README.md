@@ -30,10 +30,11 @@ cargo build --release
 ```
 
 1. Start Redis: `redis-server`
-2. Copy and edit `config.ron` for your environment
+2. Copy and edit [`config.ron`](https://github.com/tpyo/kilter/blob/main/config.ron) for your environment
 3. Run: `./target/release/kilter`
 
 Check health: `curl http://localhost:8081/healthz`
+
 View metrics: `curl http://localhost:8081/metrics`
 
 ## Docker
@@ -50,7 +51,7 @@ docker pull ghcr.io/tpyo/kilter:latest
 docker compose up
 ```
 
-Starts kilter with hot-reload, Redis, a test backend, Grafana, Prometheus, and Tempo.
+Starts kilter on [`localhost:8080`](http://localhost:8080) with hot-reload, Redis, a test backend, Grafana, Prometheus, and Tempo.
 
 ## References
 
