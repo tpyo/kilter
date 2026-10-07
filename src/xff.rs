@@ -158,7 +158,7 @@ mod tests {
     #[test]
     fn test_parse_xff_empty() {
         let ips = parse_xff("");
-        assert!(ips.is_empty());
+        assert_eq!(ips, [] as [std::net::IpAddr; 0]);
     }
 
     #[test]
@@ -349,7 +349,7 @@ mod tests {
 
         // No direct IP means we can't trust anything
         assert_eq!(client, None);
-        assert!(chain.is_empty());
+        assert_eq!(chain, [] as [std::net::IpAddr; 0]);
     }
 
     #[test]
