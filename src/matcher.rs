@@ -88,11 +88,7 @@ impl CompiledRule {
         };
         tracing::debug!(rule = %self.name, elapsed_us = t_ip.elapsed().as_micros(), "ip set check");
 
-        if !ip_matches {
-            return false;
-        }
-
-        true
+        ip_matches
     }
 
     #[tracing::instrument(skip_all, level = "debug")]
@@ -211,8 +207,7 @@ pub fn compile_rules(
             .matches
             .ip_sets
             .as_ref()
-            .map(|names| resolve_ip_sets(names, ip_sets))
-            .unwrap_or_default();
+            .map_or_default(|names| resolve_ip_sets(names, ip_sets));
 
         let mut exclude_path_patterns = Vec::new();
         let mut exclude_patterns = Vec::new();
