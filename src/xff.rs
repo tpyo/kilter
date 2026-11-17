@@ -29,13 +29,13 @@ fn extract_client_from_xff(
 ) -> (Option<IpAddr>, Vec<IpAddr>) {
     // If direct IP is not trusted, ignore XFF entirely
     if !direct_ip.is_some_and(|ip| is_trusted(ip, trusted_proxies)) {
-        let chain = direct_ip.map(|ip| vec![ip]).unwrap_or_default();
+        let chain = direct_ip.map_or_default(|ip| vec![ip]);
         return (direct_ip, chain);
     }
 
     // Empty XFF with trusted direct connection - use direct IP
     if xff_ips.is_empty() {
-        let chain = direct_ip.map(|ip| vec![ip]).unwrap_or_default();
+        let chain = direct_ip.map_or_default(|ip| vec![ip]);
         return (direct_ip, chain);
     }
 
@@ -99,7 +99,7 @@ pub fn extract_xff_info(
     }
 
     // Direct client not trusted or no valid XFF - use direct IP
-    let xff_chain = direct_ip.map(|ip| vec![ip]).unwrap_or_default();
+    let xff_chain = direct_ip.map_or_default(|ip| vec![ip]);
     (direct_ip, xff_chain)
 }
 

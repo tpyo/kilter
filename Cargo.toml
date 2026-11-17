@@ -5,7 +5,6 @@ edition = "2021"
 description = "A high-performance rate limiting reverse proxy built on Pingora"
 license = "MIT"
 repository = "https://github.com/tpyo/kilter"
-homepage = "https://github.com/tpyo/kilter"
 readme = "README.md"
 keywords = ["proxy", "rate-limiting", "reverse-proxy", "pingora", "redis"]
 categories = ["network-programming", "web-programming"]
